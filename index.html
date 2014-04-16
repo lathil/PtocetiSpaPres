@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Ptoceti's obix SPA</title>
+
+		<meta name="description" content="How I moved to a backbone stack for Ptoceti's UX">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		
+		
+		<style type="text/css">
+			.reveal pre {
+				width: 100%;
+				font-size: 0.60em;
+			}
+			
+		</style>
+		
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Ptoceti's SPA</h1>
+					<h3>From GWT to a JS stack</h3>
+					<p>
+						<small><a href="https://github.com/lathil/Ptoceti">https://github.com/lathil/Ptoceti</a></small>
+					</p>
+				</section>
+				
+				<section>
+					<div  style="float:right">
+						<h3>What is it ?</h3>
+						<ul style="display:block">
+							<li>a Obix server</li>
+							<li>a Single Page Application UI</li>
+						</ul>
+						<p></p>
+						<br/>
+						<h3>Runs on ...</h3>
+						<ul style="display:block">
+							<li>an OSGI R4 container (Felix, ...)</li>
+							<li>a JRE 7</li>
+							<li>a HTML5 browser</li>
+						</ul>
+					</div>
+					<div  style="max-width: 50%; height=auto">
+						<img alt="" src="images/ptoceti_main.jpg">
+					</div>					
+				</section>
+				
+				<section id="deployOn">
+					<section>
+						<h2>Deploy on ...</h2>
+						<figure>
+							<img alt="" src="images/powermac-g4-motorcycle-saddlebags.jpg">
+							<figcaption>my powermac G4 ... ?</figcaption>
+						</figure>
+					</section>
+					<section>
+						<h2>Deploy on ...</h2>
+						<figure>
+							<img alt="" src="images/raspberry_pi.jpeg" style="width:75%;height:auto">
+							<figcaption>probably more something like this ... </figcaption>
+						</figure>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>What does it do ?</h2>
+						<h3><font color="#F08">O</font>pen <font color="#F08">B</font>uilding <font color="#F08">I</font>nfomation e<font color="#F08">X</font>change</h3>
+						<p></p>
+						<ul>
+							<li> an OASIS standard since 2006</li>
+							<li>IBM provide an implementation in  <a href="http://publib.boulder.ibm.com/infocenter/tivihelp/v15r1/index.jsp?topic=%2Fcom.ibm.itmem.doc_6.3.2%2Fobix%2Ffac_config_agent.htm">Tivoli Power management suite</a></li>
+							<li> in Tridium Niagara AX framwork ...</li>
+							<li> Dubai airport, Olympic village & district at Beijing... </li>
+						</ul>
+					</section>
+					<section>
+						<figure>
+							<figcaption>A simple Rest service</figcaption>
+							<img src="images/Intruders-hack-industrial-heating-system-using-backdoor-posted-online-Ars-Technica-2014-04-06-17-14-40.png"/>
+						</figure>
+						<small><a href="http://arstechnica.com/security/2012/12/intruders-hack-industrial-control-system-using-backdoor-exploit/">very open</a></small>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Obix: a web service ...</h2>
+						<p>.. inspired from Rest and <a href="http://fr.wikipedia.org/wiki/Representational_State_Transfer">HATEOAS</a></p>
+						<ul>
+							<li class="fragment fade-in" data-fragment-index="1">Small object model that can be combined to describe the domain</li>
+							<li class="fragment fade-in" data-fragment-index="2">Resources identified by URL</li>
+							<li class="fragment fade-in" data-fragment-index="3">Links between resources</li>
+							<li class="fragment fade-in" data-fragment-index="4">No fixed url, resources are navigated thought links and hypermedia</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Root entry point: the Lobby</h2>
+						<pre>
+							<code  class="xml">
+								<obj href="http://localhost:8080/obix/rest/" is="obix:Lobby">
+									<op name="batch" href="/batch/" is="obix:Op" in="obix:BatchIn" out="obix:BatchOut"></op>
+									<ref name="about" href="/about/" is="obix:About"></ref>
+									<ref name="watchService" href="/watchservice/" is="obix:WatchService"></ref>
+								</obj>
+							</code>
+						</pre>
+					</section>
+					<section>
+						<h2>/about/ leads to :</h2>
+						<pre>
+							<code class="xml">
+								<obj name="about" href="http://localhost:8080/obix/rest/about/" status="ok" is="obix:About">
+									<abstime name="serverBootTime" val="2014-04-07T19:31:30+02:00"></abstime>
+									<abstime name="serverTime" val="2014-04-07T21:58:42+02:00"></abstime>
+									<str name="obixVersion" val=""></str>
+									<str name="productName" val="Obix-Lib"></str>
+									<uri name="productUrl" val="www.ptoceti.com"></uri>
+									<str name="productVersion" val="1.0.0.SNAPSHOT"></str>
+									<str name="vendorName" val="ptoceti"></str>
+									<uri name="vendorUrl" val="www.ptoceti.com"></uri>
+									<str name="serverName" val="org.ops4j.pax.web.pax-web-jetty-bundle"></str>
+								</obj>
+							</code>
+						</pre>
+					</section>
+				</section>
+				
+				<section>
+					<h2>Ptoceti's SPA stack:</h2>
+					<div >
+						<img src="images/spastack.jpg"/>
+					</div>
+				</section>
+				
+				<section>
+					<div>
+						<img  style="background-color:#FFF" src="images/backbone.png"/>
+					</div>
+					<blockquote cite="http://backbonejs.org/">
+						Backbone.js gives structure to web applications by providing models with key-value binding and custom events, collections with a rich API of enumerable functions, views with declarative event handling, and connects it all to your existing API over a RESTful JSON interface. 
+					</blockquote>
+				</section>
+				
+				<section>
+					<h2>Backbone's approach:</h2>
+					<p><i>There's more than one way do do it</i></p>
+					<ul>
+						<li>Minimalistic by design</li>
+						<li>Does not force a top level pattern for the application architecture</li>
+						<li>MVC, MVP, MVVM, .. YOU choose your fix</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>Backbone provides these objects</h2>
+					<ul>
+						<li>Backbone.Model</li>
+						<li>Backbone.Collection</li>
+						<li>Backbone.View</li>
+						<li>Backbone.Event</li>
+						<li>Backbone.Router</li>
+						<li>Backbone.History</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>For every thing else, there's ...</h2>
+					<figure style="max-width: 50%; height=auto; margin-left: auto;margin-right: auto;">
+						<img  style="background-color:#FFF" src="images/Octocat.png"/>
+						<figcaption>Github</figcaption>
+					</figure>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Using Backbones: challenge 1</h2>
+						<h3>No support for parsing nested models</h3>
+						<p>Backbone provides only for Models or Collection of Models structures. </p>
+						<ol>
+							<li>override model : function(attrs, option) in Backbone.Collection</li>
+							<li>and override parse() & implements initialise() in Backbones.Collection</li>
+						</ol>
+					</section>
+					<section>
+						<p style="text-align:left">For each Model of known type, re-assigne proper Obix Model</p>
+						<pre>
+							<code class="js">
+								var Objs = Backbone.Collection.extend({
+									...
+								    model : function(attrs, option) {
+								        switch (attrs.type) {
+								             case "abstime":
+								                 return new Abstime(attrs, option);
+								             ...
+								        }
+								    }
+									...
+								})
+							</code>
+						</pre>
+					</section>
+					<section>
+						<p style="text-align:left">By default parse() convert response to a hash of attributes, here, we convert it into a Model when appropriate.</p>
+						<pre>
+							<code class="js">
+								var Obj = Backbone.Model.extend({
+								    ...
+								    parse : function(response, options) {
+								       if (response !== null) {
+								            ...
+								            if (response.childrens !== null)
+								               response.childrens = new Objs(response.childrens, {
+								               urlRoot : _.result(this, 'urlRoot'),
+								               parent : this
+								            });
+								            ...
+								        }
+								        return response;
+								    },
+								    ...
+								})
+							</code>
+						</pre>
+					</section>
+				</section>
+				
+				
+				<section>
+					<section>
+						<h2>Using Backbones: challenge 2</h2>
+						<h3>No support for nested models event</h3>
+						<p>Events are not generated on nested attributes</p>
+						<ol>
+							<li>uses <a href="https://github.com/powmedia/backbone-deep-model">backbone-deep-model</a></li>
+							<li>or override set() in Backbone.Model</li>
+						</ol>
+						<p></p>
+						<p>last solution choosen because of the nested nature of Obix models</p>
+					</section>
+					<section>
+						<p style="text-align:left">For each attribute property that is an Model, invoke set() to generate the events.</p>
+						<pre>
+							<code class="js">
+								var Obj = Backbone.Model.extend({
+									set: function(key, val, options) {
+										...
+										 // For each `set` attribute, update or delete the current value.
+									     for (attr in attrs) {
+									        val = attrs[attr];
+									        
+									        var type = Object.prototype.toString.call(current[attr]);
+									        if( current[attr] instanceof Objs && val instanceof Objs){
+									            current[attr].set(val.models,options);
+									        } else {
+										       ...
+									        }
+									     }
+									     ...
+									}
+								})
+							</code>
+						</pre>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Using Backbones: challenge 3</h2>
+						<h3>Two-way binding</h3>
+						<p>No binding mecanisme for generated events betwen DOM element and model</p>
+						<ol>
+							<li>Backbone let it to you to install your handlers</li>
+							<li>Many plugins availables from <a href="http://epoxyjs.org/">Epoxy.js</a></li>
+							<li>to <a href="https://github.com/theironcook/Backbone.ModelBinder">Bacbone.ModelBinder</a> to ease the pain</li>
+						</ol>
+					</section>
+					<section>
+						<p style="text-align:left">On model initialisation, create a new binder.</p>
+						<pre style="margin:0px">
+							<code class="js">
+							initialize : function() {
+							    ...
+							    // initialize Backbone.ModelBinder for dual binding
+							    this.modelbinder = new ModelBinder();
+							    ...
+							}
+							</code>
+						</pre>
+						<p style="text-align:left">once the view is rendered, bind models attributes to dom elements</p>
+						<pre style="margin:0px">
+							<code class="js">
+							onRender : function() {
+						        this.modelbinder.bind(this.model, this.el, {
+							        count: {selector: '[name=count]'},
+							    });
+							    ...
+							},
+							</code>
+						</pre>
+					</section>
+				</section>
+				
+				<section>
+					<h2>Using Backbones: challenge 4</h2>
+						<h3>Nested Views</h3>
+						<p>View management is very light in Backbones</p>
+						<p>To avoid re-creating the whelle, use a third part plugin such as Chaplin, or ...
+				</section>
+				
+				<section>
+					<h2>Enter ...</h2>
+					<figure style="max-width: 50%; height=auto; margin-left: auto;margin-right: auto;">
+						<img alt="Marionette" style="background-color:#FFF" src="images/marionette.png">
+						<figcaption>Marionette</figcaption>
+					</figure>
+				</section>
+				
+				<section>
+					<h2>Marionnette is ...</h2>
+					<p>An library on top of Backbones that provides bricks to build large scale web app.</p>
+					<ul>
+						<li>View component: ItemView, CollectionView, CompositeView, Layout</li>
+						<li>View management: Region, Renderer, TemplateCache</li>
+						<li>Application structure: Application, Controller, AppRouter, EventAgregator, Command, ...
+					</ul>
+				</section>
+				
+				
+				<section>
+					<div  style="max-width: 50%;float:right">
+						<h4>Nested Views becomes trivial</h4>
+						<p style="text-align:left">Use Marionnette's region for subviews placement</p>
+						<pre style="margin:0px">
+							<code class="js">
+								regions : {
+								    header : '#header',
+								    content : '#content',
+								    footer : '#footer'
+								},
+							</code>
+						</pre>
+						<p style="text-align:left">Insert subview when ready</p>
+						<pre style="margin:0px">
+							<code class="js">
+								layout.header.show(new HeaderView({
+								    model : about
+								}));
+								
+								layout.footer.show(new FooterView({
+								    model : about
+								}));
+							</code>
+						</pre>
+					</div>
+					<div  style="max-width: 50%; height=auto">
+						<img alt="" src="images/ptoceti_main_views1.png">
+					</div>	
+				</section>
+				
+				<section>
+					<h2>Give your application structure ...</h2>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Event driven architecture</h2>
+						<h4> <a href="http://www.reactivemanifesto.org/">Reactive programming</a></h4>
+						<h3>Favor loose coupling between the application components</h3>
+						<ul>
+							<li>Use a event mediator to handle application messages</li>
+							<li>use Publish / Subscribe event communication</li>
+							<li>One main controller for booting up and application level control</li>
+							<li>Lighter messaging using <a href="https://github.com/rotundasoftware/backbone.courier">Courier</a>  between nested views </li>
+							<li>Ease scalability
+						</ul>
+					</section>
+					<section>
+						<h2>Example</h2>
+						<h4>In header subview, generate event to go to history display ...</h4>
+						<pre>
+							<code class="js">
+								var HeaderView = Marionette.ItemView.extend({
+								...
+								    historyMenuClicked : function() {
+								        this.ui.lobbyMenu.parent().removeClass('active');
+								        this.ui.watchesMenu.parent().removeClass('active');
+								        this.ui.historyMenu.parent().addClass('active');
+								        ventAggr.trigger("app:goToHistory");
+								...
+								});
+							</code>
+						</pre>
+					</section>
+					<section>
+						<h4> ... in main app, event is caught and we ask the controller to do something in response</h4>
+						<pre>
+							<code class="js">
+								var app = new Marionette.Application();
+								
+								app.on('start', function() {
+								    ...
+								    ventAggr.on("app:goToHistory", function() {
+								        if( Backbone.history.fragment != "history" ) {
+								            Backbone.history.navigate("history", {});
+								            app.controller.goToHistory();
+								        }
+								    });
+								    ...
+								});
+	
+							</code>
+						</pre>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Modular Application</h2>
+						<h3>All components (views, controllers, ..) are AMD modules</h3>
+						<p><a href="http://requirejs.org/">Require.js</a> used to link them at runtime and optimization phase</p>
+						<ul>
+							<li>Application loaded peace-meal</li>
+							<li>Most important first - user don't have to wait too long</li>
+							<li>Resilliance</li>
+						</ul>
+					</section>
+					<section>
+						<div  style="float:right">
+							<h3>Why AMD ?</h3>
+							<p>I've got big walls ..</p>
+							<p>... wi-fi don't go well throught them</p>
+						</div>
+						<div  style="max-width: 50%; height=auto">
+							<img alt="" src="images/bigwall.png">
+						</div>	
+					</section>
+					<section>
+						<h2>Modular Application</h2>
+						<p>Example: module declaration</p>
+						<pre>
+							<code class="js">
+								define(['backbone', 'marionette', 'underscore', 'eventaggr', 'views/obixview','models/obix', 'models/watcheslocal', 'models/watches'], function(
+		Backbone, Marionette, _, ventAggr, ObixView, Obix, WatchesLocal, Watches) {
+
+								    var AppController = Marionette.Controller.extend({
+								    ...
+								    });
+
+								    return AppController;
+								});
+							</code>
+						</pre>
+					</section>
+					<section>
+						<h2>Modular Application</h2>
+						<p>Example: loading a module asynchronously</p>
+						<pre>
+							<code class="js">
+								goToHistory : function() {
+								    var controller = this;
+								    require(['views/historyview'], function(HistoryView) {
+								        controller.obixView.content.show(new HistoryView());
+								    });
+								}
+							</code>
+						</pre>
+					</section>
+					<section>
+						<div  style="float:right">
+							<h3>AMD loading </h3>
+							<p>No optimisation</p>
+							<ul>
+								<li>each module loaded separatly</li>
+								<li>perfect for dev phase</li>
+							</ul>
+						</div>
+						<div  style="max-width: 50%; height=auto">
+							<img alt="" src="images/no-optimize-loading.png">
+						</div>	
+					</section>
+					<section>
+						<h3>AMD loading</h3>
+						<p>Redefine your modules contents</p>
+						<p>Enter your modules definitions in require.js config inside your grunt.js file (if your are using Grunt)</p>
+						
+						<pre>
+							<code class="js">
+								requirejs: {
+								    compile_build: {
+								        options: {
+								            optimize:"uglify",
+								            optimizeCss: "standard",
+								            modules : [
+								                {name: 'main', include: ["i18n", "text",'courier','moment','mediaenquire','jquery.enterkeyevent']},
+								                {name:'views/headerview', exclude: [...]},
+								                {name:'views/footerview', exclude: [...]},
+								                ...
+								            ]
+								        }
+								    }
+								}
+							</code>
+						</pre>
+					</section>
+					<section>
+						<div  style="float:right">
+							<h3>AMD loading </h3>
+							<p>with optimisation</p>
+							<ul>
+								<li>1st module: common libs + core </li>
+								<li>each subview as own module</li>
+								<li>modules are loaded as needed</li>
+							</ul>
+						</div>
+						<div  style="max-width: 50%; height=auto">
+							<img alt="" src="images/optimized-loading.png">
+						</div>	
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Make the application responsive</h2>
+						<ul>
+							<li>Bootstrap 3 handle responsive grid and css</li>
+							<li><a href="http://modernizr.com/">Modernizr</a> detect device capabilities ( svg,mq,websocket...) and provides polyfils in some case</li>
+							<li>Javascript media queries ( <a href="http://wicky.nillia.ms/enquire.js/">enquire.js</a>) gives the application opportunites to present alternatives components</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Example: using Modernizer to test for svg support</h2>
+						<small>(we use d3.js to display graph - not supported on gingerbread default browser)</small>
+						<pre>
+							<code class="js">
+								if( Modernizr.svg) {
+								    var region = this.historyRegion;
+								    require(['views/historyrollupchartview'], function(HistoryRollupChartView){
+								        ...
+								    });
+								}
+							</code>
+						</pre>
+						<p>This avoid sending d3.js + xcharts.js + xcharts.css to the browser if it can't use it.</p>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Summary</h2>
+						<h4>Positive sides of a Backbone stack:</h4>
+						<ul>
+							<li>Communauty around it still vibrant</li>
+							<li>Plenty of choices for plugins</li>
+							<li>Lightweight library does not get into your way -> very flexible</li>
+							<li>Force you to build your application structure</li>
+							<li>Integrate well with an AMD structure</li>
+							<li>Imperative style vs Declarative (depends where you stand)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Summary</h2>
+						<h4>Not so positive sides of a Backbone stack:</h4>
+						<ul>
+							<li>Needs to select your plugins depending on your need ( or use yeoman for a standard stack)</li>
+							<li>Backbones force 1 Model per View structure; ( With Angular you can have N Controller/Model per View)</li>
+							<li>Model.toJson() used for serialisation to view and to server ( via REST ). Difficulties to display extrat attributes</li>
+							<li>No separation between Models and provider. Would be nice to have disconnected Models</li>
+							<li>backbones is not RAD ( if you are in this kind of thing).</li>
+						</ul>
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				
+				// The "normal" size of the presentation, aspect ratio will be preserved
+			    // when the presentation is scaled to fit different resolutions. Can be
+			    // specified using percentage units.
+			    width: 960,
+			    height: 700,
+			    
+			 // Factor of the display size that should remain empty around the content
+			    margin: 0.02,
+
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+			
+		</script>
+
+	</body>
+</html>
