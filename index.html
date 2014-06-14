@@ -210,12 +210,37 @@
 				
 				<section>
 					<section>
-						<h2>Using Backbones: challenge 1</h2>
+						<h2>Using Backbone: challenge 1</h2>
 						<h3>No support for parsing nested models</h3>
 						<p>Backbone provides only for Models or Collection of Models structures. </p>
 						<ol>
 							<li>override model : function(attrs, option) in Backbone.Collection</li>
-							<li>and override parse() & implements initialise() in Backbones.Collection</li>
+							<li>and override parse() & implements initialise() in Backbone.Collection</li>
+						</ol>
+					</section>
+					<section>
+						<h3>Why do we need nested models ?</h3>
+						<ol>
+						<ul>
+						<p> Obix responses are structured by Entities :</p>
+						<pre>
+							<code class="xml">
+								<obj href="http://localhost:8080/obix/rest/" is="obix:Lobby">
+									<op name="batch" href="/batch/" is="obix:Op" in="obix:BatchIn" out="obix:BatchOut"/>
+									<ref name="about" href="/about/" is="obix:About"/>
+									<ref name="watchService" href="/watchservice/" is="obix:WatchService"/>
+								</obj>
+							</code>
+						</pre>
+						</ul>
+						<ul>
+						<p>We map each entity to a model, that allows us to define and use helper functions :</p>
+						<pre>
+							<code class="js">
+								var aboutRef = this.lobby.getAbout().getHref());
+							</code>
+						</pre>
+						</ul>
 						</ol>
 					</section>
 					<section>
@@ -264,7 +289,7 @@
 				
 				<section>
 					<section>
-						<h2>Using Backbones: challenge 2</h2>
+						<h2>Using Backbone: challenge 2</h2>
 						<h3>No support for nested models event</h3>
 						<p>Events are not generated on nested attributes</p>
 						<ol>
@@ -272,7 +297,7 @@
 							<li>or override set() in Backbone.Model</li>
 						</ol>
 						<p></p>
-						<p>last solution choosen because of the nested nature of Obix models</p>
+						<p>last solution chosen because of the nested nature of Obix models</p>
 					</section>
 					<section>
 						<p style="text-align:left">For each attribute property that is an Model, invoke set() to generate the events.</p>
@@ -302,9 +327,9 @@
 				
 				<section>
 					<section>
-						<h2>Using Backbones: challenge 3</h2>
+						<h2>Using Backbone: challenge 3</h2>
 						<h3>Two-way binding</h3>
-						<p>No binding mecanisme for generated events betwen DOM element and model</p>
+						<p>No binding mechanism for generated events betwen DOM element and model</p>
 						<ol>
 							<li>Backbone let it to you to install your handlers</li>
 							<li>Many plugins availables from <a href="http://epoxyjs.org/">Epoxy.js</a></li>
@@ -338,10 +363,10 @@
 				</section>
 				
 				<section>
-					<h2>Using Backbones: challenge 4</h2>
+					<h2>Using Backbone: challenge 4</h2>
 						<h3>Nested Views</h3>
-						<p>View management is very light in Backbones</p>
-						<p>To avoid re-creating the whelle, use a third part plugin such as Chaplin, or ...
+						<p>View management is very light in Backbone</p>
+						<p>To avoid re-creating the wheel, use a third part plugin such as Chaplin, or ...
 				</section>
 				
 				<section>
@@ -354,7 +379,7 @@
 				
 				<section>
 					<h2>Marionnette is ...</h2>
-					<p>An library on top of Backbones that provides bricks to build large scale web app.</p>
+					<p>An library on top of Backbone that provides bricks to build large scale web app.</p>
 					<ul>
 						<li>View component: ItemView, CollectionView, CompositeView, Layout</li>
 						<li>View management: Region, Renderer, TemplateCache</li>
@@ -395,6 +420,44 @@
 				</section>
 				
 				<section>
+					<section>
+						<h2>Templating handled by ..</h2>
+						<figure style="max-width: 50%; height=auto; margin-left: auto;margin-right: auto;">
+							<img alt="Handlebars" style="background-color: #F7931E" src="images/handlebars_logo.png">
+						</figure>
+					</section>
+					<section>
+						<h3>Support expressions, helpers, model attribute mappings, ...</h3>
+						<pre>
+							<code class="html">
+								<div class="row">
+									<div class="col-md-8 col-sm-8 col-xs-10">
+										<p><span name="displayName" {{#if "contentEditable" }}contenteditable="true"{{/if}}>{{displayName}}</span></p>
+									</div>
+									<div class="col-md-3 col-sm-3 hidden-xs">
+									</div>
+									<div class="col-md-1 col-sm-1 col-xs-2">
+										<p><a data-toggle="collapse" data-target="#monitoredDetails{{elemId}}"><span name="detailsCollapseControl" class="glyphicon glyphicon-chevron-down h3"/></a></p>
+									</div>
+								</div>
+							</code>
+						</pre>
+						<ul>
+							<li>{{#if ... }} {{/if}} -> expression with if helper</li>
+							<li>{{displayname}} -> mapping of attached model's 'displayName' attribute.
+						</ul>
+					</section>
+					<section>
+						<h3>Integration with Marionnette</h3>
+						<ul>
+							<li>Marrionette provides a template cache for compiled templates</li>
+							<li>Templates are compiled on demand on the browser and stored in the cache</li>
+							<li>Facilitate development, as just need to do refresh on the browser to get a new compiled template</li>
+						</ul>
+					</section>
+				</section>
+				
+				<section>
 					<h2>Give your application structure ...</h2>
 				</section>
 				
@@ -427,6 +490,7 @@
 								});
 							</code>
 						</pre>
+						<small>headerview.js is controller of the header, listen to history tab being click. We need to 'activate' through css the menu, Bootstrap failing to do this in our setup.</small>
 					</section>
 					<section>
 						<h4> ... in main app, event is caught and we ask the controller to do something in response</h4>
@@ -458,7 +522,7 @@
 						<ul>
 							<li>Application loaded peace-meal</li>
 							<li>Most important first - user don't have to wait too long</li>
-							<li>Resilliance</li>
+							<li>Resilience</li>
 						</ul>
 					</section>
 					<section>
@@ -560,7 +624,7 @@
 						<h2>Make the application responsive</h2>
 						<ul>
 							<li>Bootstrap 3 handle responsive grid and css</li>
-							<li><a href="http://modernizr.com/">Modernizr</a> detect device capabilities ( svg,mq,websocket...) and provides polyfils in some case</li>
+							<li><a href="http://modernizr.com/">Modernizr</a> detect device capabilities ( svg,mq,websocket...) and provides polyfil in some case</li>
 							<li>Javascript media queries ( <a href="http://wicky.nillia.ms/enquire.js/">enquire.js</a>) gives the application opportunites to present alternatives components</li>
 						</ul>
 					</section>
@@ -583,6 +647,48 @@
 				
 				<section>
 					<section>
+						<h2>Project building</h2>
+						<p>we use:</p>
+						<div>
+							<ul>
+								<li>Bower for javacript dependencies</span>
+									<figure style="max-width: 15%; height=auto; margin-left: auto;margin-right: auto;">
+										<img alt="bower" style="background-color:#FFF" src="images/bower-logo.png">
+									</figure>
+								</li>
+								<li>Grunt for scheduling building of ihm project
+									<figure style="max-width: 15%; height=auto; margin-left: auto;margin-right: auto;">
+										<img alt="grunt" style="background-color:#FFF" src="images/grunt-logo.png">
+									</figure>
+								</li>
+								<li>Maven for builing the osgi Bundle
+									<figure style="max-width: 20%; height=auto; margin-left: auto;margin-right: auto;">
+										<img alt="maven" style="background-color:#FFF" src="images/maven_logo.svg.png">
+									</figure>
+								</li>
+							</ul>
+						</div>
+					</section>
+					<section>
+						<h3>Project layout</h3>
+						<div  style="max-width: 50%;float:right">
+							<ul>
+								<li>in bower_component the dependencides loaded by bower</li>
+								<li>in js/app the application code</li>
+								<li>in js/lib the cleaned up dependencies</li>
+								<li>in js_optimized, the application uglified and modularized by require.js</li>
+							</ul>
+							<p/>
+							<p>Maven launch Grunt, which in turn launch Bower, Modernizr an then RequireJs</p>
+						</div>
+						<div  style="max-width: 50%; height=auto">
+							<img alt="" src="images/project_structure.png">
+						</div>
+					</section>
+				</section>
+				
+				<section>
+					<section>
 						<h2>Summary</h2>
 						<h4>Positive sides of a Backbone stack:</h4>
 						<ul>
@@ -599,10 +705,10 @@
 						<h4>Not so positive sides of a Backbone stack:</h4>
 						<ul>
 							<li>Needs to select your plugins depending on your need ( or use yeoman for a standard stack)</li>
-							<li>Backbones force 1 Model per View structure; ( With Angular you can have N Controller/Model per View)</li>
+							<li>Backbone force 1 Model per View structure; ( With Angular you can have N Controller/Model per View)</li>
 							<li>Model.toJson() used for serialisation to view and to server ( via REST ). Difficulties to display extrat attributes</li>
 							<li>No separation between Models and provider. Would be nice to have disconnected Models</li>
-							<li>backbones is not RAD ( if you are in this kind of thing).</li>
+							<li>Backbone is not RAD ( if you are in this kind of thing).</li>
 						</ul>
 					</section>
 				</section>
