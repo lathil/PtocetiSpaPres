@@ -682,8 +682,36 @@
 							<p>Maven launch Grunt, which in turn launch Bower, Modernizr an then RequireJs</p>
 						</div>
 						<div  style="max-width: 50%; height=auto">
-							<img alt="" src="images/project_structure.png">
+							<img alt="" src="images/project_structure.png"/>
 						</div>
+					</section>
+					<section>
+						<h3>Build in a CI environment</h3>
+						<p>We make use of a Jenkins platform at<img style="margin-left:10px;vertical-align:middle" src="images/cloudbees.jpg"/> </p>
+						<div  style="max-width: 80%; height=auto">
+							<img alt="" src="images/CloudBees_NodeJS.png"/>
+						</div>
+						<p>Simply need to add and configure the NodeJS plugin in 'Administer Jenkins'</p>
+					</section>
+					<section>
+						<h3>Develoment, debugging ...</h3>
+						<ul>
+							<li>Locally Osgi server is started with pax runner</li>
+							<li>Embedded Jetty is configured to serve dev portion of js application ( build is minified )</li>
+							<li>Then we use Chrome dev tools to map application to source folder. Development and debugging made in Chrome</li>
+							<div  style="max-width: 80%; height=auto">
+								<img alt="" src="images/Chrome_debug.png"/>
+							</div>
+						</ul>
+					</section>
+					<section>
+						<h3>Develoment, debugging on remote</h3>
+						<p>Server is deployed on target using <img style="margin-left:10px;vertical-align:middle" src="images/docker_logo.jpg"/></p>
+						<ul>
+							<li>see <a href="https://github.com/lathil/docker-felix">docker-felix</a></li>
+							<li>and <a href="https://github.com/lathil/docker-ptoceti">docker-ptoceti</a></li>
+						</ul>
+						<p>Application js served with npm serve on developemnt machine, make access through CORS to remote server.</p>
 					</section>
 				</section>
 				
@@ -709,6 +737,17 @@
 							<li>Model.toJson() used for serialisation to view and to server ( via REST ). Difficulties to display extrat attributes</li>
 							<li>No separation between Models and provider. Would be nice to have disconnected Models</li>
 							<li>Backbone is not RAD ( if you are in this kind of thing).</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Summary</h2>
+						<h4>Compare to Angular ?</h4>
+						<ul>
+							<li>Main advantage here is the possibility to load modules asynchronously and on demand.</li>
+							<li>Angular actually does not support if ( see Angular.js 2 with Durandal), you need to define new provider:
+								<a href="http://ify.io/lazy-loading-in-angularjs/">Lazy Loading In AngularJS</a> and
+								<a href="http://blog.getelementsbyidea.com/load-a-module-on-demand-with-angularjs/">Load a module on demand with AngularJS</a>
+							</li>
 						</ul>
 					</section>
 				</section>
